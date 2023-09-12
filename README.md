@@ -21,98 +21,103 @@ To write a program to implement the the Logistic Regression Model to Predict the
 ```py
 ## Developed by: Kavinraja D
 ## RegisterNumber: 212222240047
-# Import Library
+
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-#Read The File
-dataset=pd.read_csv('Placement_Data_Full_Class.csv')
-dataset
+data=pd.read_csv("Placement_Data.csv")
+data.head()
 
-dataset.head(10)
+data1=data.copy()
+data1=data1.drop(["sl_no","salary"],axis=1)#Browses the specified row or column
+data1.head()
 
-dataset.tail(10)
-# Dropping the serial number and salary column
-dataset=dataset.drop(['sl_no','ssc_p','workex','ssc_b'],axis=1)
-dataset
+data1.isnull().sum()
 
-dataset.shape
-dataset.info()
+data1.duplicated().sum()
 
-dataset["gender"]=dataset["gender"].astype('category')
-dataset["hsc_b"]=dataset["hsc_b"].astype('category')
-dataset["hsc_s"]=dataset["hsc_s"].astype('category')
-dataset["degree_t"]=dataset["degree_t"].astype('category')
-dataset["specialisation"]=dataset["specialisation"].astype('category')
-dataset["status"]=dataset["status"].astype('category')
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+data1["gender"]=le.fit_transform(data1["gender"])
+data1["ssc_b"]=le.fit_transform(data1["ssc_b"])
+data1["hsc_b"]=le.fit_transform(data1["hsc_b"])
+data1["hsc_s"]=le.fit_transform(data1["hsc_s"])
+data1["degree_t"]=le.fit_transform(data1["degree_t"])
+data1["workex"]=le.fit_transform(data1["workex"])
+data1["specialisation"]=le.fit_transform(data1["specialisation"] )     
+data1["status"]=le.fit_transform(data1["status"])       
+data1 
 
-dataset.info()
+x=data1.iloc[:,:-1]
+x
 
-dataset["gender"]=dataset["gender"].cat.codes
-dataset["hsc_b"]=dataset["hsc_b"].cat.codes
-dataset["hsc_s"]=dataset["hsc_s"].cat.codes
-dataset["degree_t"]=dataset["degree_t"].cat.codes
-dataset["specialisation"]=dataset["specialisation"].cat.codes
-dataset["status"]=dataset["status"].cat.codes
-dataset.info()
-
-dataset
-
-# selecting the features and labels
-x=dataset.iloc[:, :-1].values
-y=dataset.iloc[: ,-1].values
+y=data1["status"]
 y
 
-# dividing the data into train and test
 from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2)
-dataset.head()
-y_train.shape
-x_train.shape
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
 
-# Creating a Classifier using Sklearn
 from sklearn.linear_model import LogisticRegression
-clf=LogisticRegression(random_state=0,solver='lbfgs',max_iter=1000).fit(x_train,y_train)
-# Printing the acc
-clf=LogisticRegression()
-clf.fit(x_train,y_train)
-clf.score(x_test,y_test)
+lr=LogisticRegression(solver="liblinear")
+lr.fit(x_train,y_train)
+y_pred=lr.predict(x_test)
+y_pred
 
-clf.predict([[1,	91.00,	1,	1,	58.00,	2,	55.0,	1,	58.80	]])
+from sklearn.metrics import accuracy_score
+accuracy=accuracy_score(y_test,y_pred)
+accuracy
+
+from sklearn.metrics import confusion_matrix
+confusion=confusion_matrix(y_test,y_pred)
+confusion
+
+from sklearn.metrics import classification_report
+classification_report1 = classification_report(y_test,y_pred)
+print(classification_report1)
+
+lr.predict([[1,80,1,90,1,1,90,1,0,85,1,85]])
 ```
 
 ## Output:
 
 ### Placement Data:
+![output](./images/data.png)
 
 
 ### Salary Data:
+![output](./images/salarydata.png)
 
 
 ### Checking the null() function:
+![output](./images/null.png)
 
 ### Data Duplicate: 
+![output](./images/duplicate.png)
 
 
 ### print Data:
+![output](./images/dataprint.png)
 
 
 ### Data-Status:
+![output](./images/datastatus.png)
 
 
 ### y_prediction  array:
+![output](./images/ypredict.png)
 
 
 ### Accuracy value:
+![output](./images/accuracy.png)
 
 
 ### Confusion array:
-
+![output](./images/confusion.png)
 
 ### Classification Report:
+![output](./images/cr.png)
 
 
 ### Prediction of LR:
+![output](./images/lrpredict.png)
 
 
 ## Result:
